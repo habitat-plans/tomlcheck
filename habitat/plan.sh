@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 pkg_name=tomlcheck
 pkg_origin=ya
 pkg_version="0.1.0.38"
@@ -8,13 +10,22 @@ pkg_filename="${pkg_name}"
 pkg_shasum="118d26a04f8e463a21f53ddd7fd0394dadfe2164bb1c686d4f861d92862f2575"
 
 pkg_deps=(core/glibc core/gmp)
-pkg_build_deps=(core/patchelf)
+pkg_build_deps=(
+    core/patchelf
+
+    # Habitat Development SDK
+    ya/hab-plan-make-shellcheck
+)
 pkg_bin_dirs=(bin)
 
 do_unpack() {
     pushd "${HAB_CACHE_SRC_PATH}" > /dev/null
     chmod +x "$pkg_name"
     popd
+}
+
+do_prepare() {
+    hab-plan-make-shellcheck "$PLAN_CONTEXT"
 }
 
 do_build() {
